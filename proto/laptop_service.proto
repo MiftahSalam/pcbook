@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "pc-book/pb";
+
+import "google/api/annotations.proto";
+
+import "laptop_message.proto";
+import "filter_message.proto";
+
+message CreateLaptopRequest {
+    Laptop laptop = 1;
+}
+
+message CreateLaptopResponse {
+    string id = 1;
+}
+
+message SearchLaptopRequest {
+    FilterMessage filter = 1;
+}
+
+message SearchLaptopResponse {
+    Laptop laptop = 1;
+}
+
+message ImageInfo {
+    string laptop_id = 1;
+    string image_type =2;
+}
+
+message UploadImageRequest {
+    oneof data {
+        ImageInfo info = 1;
+        bytes chunk_data   = 2;
+    }
+}
+
+message UploadImageResponse {
+    string id = 1;
+    uint32 size = 2;
+}
+
+message RateLaptopRequest {
+    string laptopId = 1;
+    double score = 2;
+}
+
+message RateLaptopResponse {
+    string laptop_id = 1;
+    uint32 rate_count = 2;
+    double average_score = 3;
+}
+
+service LaptopService {
+    rpc CreateLaptop (CreateLaptopRequest) returns (CreateLaptopResponse){
+        option (google.api.http) = {
+            post: "/v1/laptop/create"
+            body: "*"
+        };
+    };
+    rpc SearchLaptop (SearchLaptopRequest) returns (stream SearchLaptopResponse){
+        option (google.api.http) = {
+            get: "/v1/laptop/search"
+        };
+    };
+    rpc UploadImage (stream UploadImageRequest) returns (UploadImageResponse){
+        option (google.api.http) = {
+            post: "/v1/laptop/upload_image"
+            body: "*"
+        };
+    };
+    rpc RateLaptop (stream RateLaptopRequest) returns (stream RateLaptopResponse){
+        option (google.api.http) = {
+            post: "/v1/laptop/rate"
+            body: "*"
+        };
+    };
+}

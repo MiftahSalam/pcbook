@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "pc-book/pb";
+
+import "memory_message.proto";
+
+message CPU {
+    string brand = 1;
+    string name = 2;
+    uint32 cores_munber = 3;
+    uint32 threads_number = 4;
+    double min_freq = 5;
+    double max_freq = 6;
+}
+
+message GPU {
+    string brand = 1;
+    string name = 2;
+    double min_freq = 3;
+    double max_freq = 4;    
+    Memory memory = 5;
+}
